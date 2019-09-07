@@ -1,0 +1,29 @@
+表2-1  系别信息表：dept
+列名	数据类型	长度	是否允许NULL	说明
+DNO	Char	4	×	系别编号，唯一性
+DNAME	Char	30	×	系别名
+DEAN	Char	20	√	系主任姓名
+
+表2-2  学生信息表：student
+列名	数据类型	长度	是否允许NULL	说明
+SNO	Char	10	×	学号，唯一性，前4位表示入学年份
+SNAME	Char	20	×	姓名
+AGE	smallint	2	√	年龄
+SEX	Char	2	√	性别，只能是男'或'女
+DNO	Char	4	×	系别编号
+BIRTHDAY	datetime	8	√	出生日期
+
+表2-3 课程信息表： course
+列名	数据类型	长度	是否允许NULL	说明
+CNO	Char	8	×	课程编号, 主码
+CNAME	Char	30	×	课程名称
+TNAME	Char	20	√	教师姓名
+CREDIT	float	4	√	课程学分
+ROOM	Char	30	√	上课教室
+
+表2-4   学生选课表：sc
+列名	数据类型	长度	是否允许NULL	说明
+SNO	Char	10	×	学号
+CNO	Char	8	×	课程编号
+GRADE	float	2	√	课程成绩
+
