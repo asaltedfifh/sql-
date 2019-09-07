@@ -1,0 +1,194 @@
+表2-1  系别信息表：dept
+列名	数据类型	长度	是否允许NULL	说明
+DNO	Char	4	×	系别编号，唯一性
+DNAME	Char	30	×	系别名
+DEAN	Char	20	√	系主任姓名
+
+表2-2  学生信息表：student
+列名	数据类型	长度	是否允许NULL	说明
+SNO	Char	10	×	学号，唯一性，前4位表示入学年份
+SNAME	Char	20	×	姓名
+AGE	smallint	2	√	年龄
+SEX	Char	2	√	性别，只能是男'或'女
+DNO	Char	4	×	系别编号
+BIRTHDAY	datetime	8	√	出生日期
+
+表2-3 课程信息表： course
+列名	数据类型	长度	是否允许NULL	说明
+CNO	Char	8	×	课程编号, 主码
+CNAME	Char	30	×	课程名称
+TNAME	Char	20	√	教师姓名
+CREDIT	float	4	√	课程学分
+ROOM	Char	30	√	上课教室
+
+表2-4   学生选课表：sc
+列名	数据类型	长度	是否允许NULL	说明
+SNO	Char	10	×	学号
+CNO	Char	8	×	课程编号
+GRADE	float	2	√	课程成绩
+
+1.求系别编号为’0001’的学生的学号、姓名、性别
+  SELECT SNO,SNAME,SEX  
+  FROM student 
+  WHERE DNO='0001' 
+  
+2.求系别编号为’0001’ 的男生的学号、姓名、性别
+	SELECT SNO,SNAME,SEX  
+	FROM student 
+	WHERE DNO='0001' AND SEX='男'
+	
+3.求选修授课班号为‘327401’且成绩在80～90之间的学生学号和成绩，并将成绩乘以系数0.8输出，且将SNO列更名为学号，成绩列更名为处理成绩 。 
+	SELECT SNO AS 学号,GRADE*0.8 AS 处理成绩 
+	FROM sc   
+	WHERE CNO='327401' AND GRADE BETWEEN 80 AND 90 
+	
+4．求每个学生的年龄，并输出姓名和年龄
+	SELECT SNAME,YEAR(GETDATE())-YEAR(BIRTHDAY) AS 年龄 
+	FROM student
+	
+5．求选修了课程的学生的学号
+	SELECT DISTINCT SNO FROM sc
+	说明：注意在SNO前加DISTINCT与不加DISTINCT的区别
+	
+6．求选修授课班号为’327401’的学生学号和成绩，并要求对查询结果按成绩的降序排列，如果成绩相同则按学号的升序排列
+	SELECT SNO,GRADE 
+	FROM sc 
+	WHERE CNO='327401' 
+	ORDER BY GRADE DESC,SNO ASC
+	
+7．求缺少了成绩的学生学号和课程号。
+	SELECT SNO,CNO  FROM sc  WHERE GRADE IS NULL
+	
+8．统计选课学生人数及最高分成绩和最低分成绩 
+	SELECT COUNT(DISTINCT SNO) ,MAX(GRADE),MIN(GRADE)
+	FROM sc
+	
+9．求系别编号为’0001’或‘0002‘中姓张的学生的信息。 
+	SELECT  * 
+	FROM student  
+	WHERE (DNO='0001' OR DNO='0002' ) AND SNAME LIKE '张%'
+	
+10．求姓名中包含’丽’的学生信息
+	SELECT  * 
+	FROM student  
+	WHERE SNAME LIKE '%丽%'
+	
+11．求姓名只有两个字，且第二个字为’丽’的学生信息
+	SELECT  * 
+	FROM student  
+	WHERE SNAME LIKE '_丽'
+	
+12．求信息系别计算机专业的学生名单
+	SELECT * 
+	FROM student
+	WHERE SUBSTRING(SNO,5,2)='24'
+  注：
+	SUBSTRING（str，x，y）：str，代表字符串；x，代表是从第几位开始截取；y，代表截取几位数。
+  例子：
+	substring（‘abcdefgh’,3,2） 结果为：cd
+	
+13．统计各个系别的人数
+	SELECT COUNT(SNO) AS 系别总人数 , DNO AS  部门编号 
+	FROM student 
+	GROUP BY DNO
+	
+14．按授课班号统计选修该课程的人数，并按照人数升序排列。
+	SELECT COUNT(SNO)  AS  人数统计,CNO   
+	FROM sc
+	GROUP BY CNO
+	ORDER BY 人数统计
+	
+15．统计平均成绩超过80分的学生的学号及平均成绩
+	SELECT SNO,AVG(GRADE)
+	FROM sc
+	GROUP BY SNO 
+	HAVING AVG(GRADE)>= 80
+	ORDER BY AVG(GRADE)
+	
+16．求选修课程超过6门课的学生学号，并按选修课程数目升序排列。
+	SELECT SNO,COUNT(*)  
+	FROM sc  
+	GROUP BY SNO
+	HAVING COUNT(SNO)>6 
+	ORDER BY COUNT(SNO)
+17．求每个系别学生的平均年龄，并把结果存入当前数据库‘系平均年龄’临时表中。
+	SELECT DNO,AVG(AGE)  AS 平均   INTO  系平均年龄     
+	FROM student  
+	GROUP BY DNO
+	说明：系统自动生成表:系平均年龄临时表，在执行该语句之前，数据库中不能存在‘系平均年龄’表
+
+18．分页浏览数据方法：
+（1）查询学生库中的第1-10名同学的信息
+			SELECT top 10  *  FROM student  
+（2）查询学生库中的第11-20名同学的信息
+			SELECT top 10 * FROM student  WHERE SNO not IN(SELECT top 10 SNO FROM student )  
+	说明：我们在浏览网页时，经常可以看到多行数据可以分页显示，上述方法加上适当的变量控制就能实现
+	
+19．查询‘1987-1-1’号以后出生的女生的学生信息
+	SELECT *
+	FROM student
+	WHERE birthday>'1987-1-1' AND SEX='女'
+	
+20．按学号显示信息系别，通信专业的每个学生的每门课程的成绩明细，并统计每个学生的总成绩，平均成绩
+	SELECT SNO,CNO,GRADE
+	FROM sc
+	WHERE SUBSTRING(SNO,5,2)='22' 
+	ORDER BY SNO
+	COMPUTE SUM(GRADE),AVG(GRADE)  BY SNO
+	
+21．创建'计算机系学生'视图，用于浏览计算机系学生的学号、姓名和年龄
+	CREATE VIEW 计算机系学生   
+	AS 
+	SELECT SNO,SNAME,AGE  
+	FROM student  
+	WHERE SUBSTRING(SNO,5,2)='28'
+	
+思考模仿题：
+1.查询分数在70和90之间的学生学号
+	SELECT SNO
+	FROM sc
+	GROUP BY SNO
+	HAVING MIN(GRADE)>70 AND MAX(GRADE)<90
+
+2.查询少于10名同学选修的授课班号
+	SELECT CNO
+	FROM sc
+	GROUP BY CNO
+	HAVING COUNT(*)<10
+	ORDER BY CNO
+	
+3.查询选课表中的最高分
+	SELECT MAX(GRADE)  AS   最高分
+	FROM sc
+	
+4.查询授课编号为‘153701’的课程的平均分
+	SELECT  AVG(GRADE)  AS  '课程平均分'
+	FROM  sc
+	WHERE CNO='153701'
+	
+5.查询课程平均分超过85的授课班号，输出结果按课程平均分升序排列
+	SELECT CNO,AVG(GRADE)
+	FROM sc
+	GROUP BY CNO
+	HAVING AVG(GRADE)>85
+	ORDER BY AVG(GRADE)
+	
+6.查询课程名称为’线性代数’的排课情况
+	SELECT *
+	FROM course
+	WHERE CNAME='线性代数'
+	
+7.查询选修授课班号为‘218801’的学生学号
+	SELECT SNO 
+	FROM sc
+	WHERE CNO='218801'   
+	ORDER BY SNO
+	
+8.按授课班号查询课程的平均分，输出授课班号和平均成绩
+	SELECT CNO,AVG(GRADE)
+	FROM sc
+	GROUP BY CNO
+	
+9.在sc中输出成绩在90-100之间的学生信息
+	SELECT * FROM sc WHERE  CONVERT(char(20),GRADE) LIKE   '9%'
+
