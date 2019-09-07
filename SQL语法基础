@@ -1,0 +1,67 @@
+创建数据库
+create [database/schema] <数据库名>;
+例子：
+create schema xsgl
+on
+(
+  name = xsgl_data,
+  filename = 'e:\xsgl.mdf',
+  size = 10mb,
+  maxsize = 50mb,
+  filegrowth = 5%)
+)
+log on
+(
+  name = xsgl_log,
+  filename = 'e:\xsgl_log.ldf',
+  size = 2mb,
+  maxsize = 5mb,
+  filegrowth = 1mb);
+
+删除数据库
+drop schema <数据库名>;
+
+设置默认数据库
+use schema_name;
+
+创建表（例子）
+create table student
+(
+  sno char(8) not null unique,
+  sname char(10) not null,
+  age int,
+  sex char(2) check (sex in ('男','女')),
+  primary key (sno)
+);
+ 
+删除表
+drop table <表名>;
+
+增加表格数据
+insert into table_name values (---在此输入所有数据---);
+insert into table_name (---在此输入选择的列名---) values (---在此输入对应的数据---);
+
+删除表格数据
+delete from table_name where "primary key_name" = <主键名>;
+
+修改表格数据
+update table_name set <列名>
+
+查询表格数据
+SELECT  列名表  [INTO 新表名] FROM 表或视图名
+[WHERE 查询限定条件]
+[GROUP BY 分组表达式]
+[HAVING 分组条件]
+[ORDER BY 次序表达式[ASC][DESC]]
+[COMPUTE  BY ]
+
+聚集函数：
+SQL提供很多聚集函数，主要有：
+COUNT([DISTINCT|ALL]*)  统计元组个数
+COUNT([DISTINCT|ALL]<列名>) 统计一列中值的个数
+SUM([DISTINCT|ALL] <列名>)  计算一列值的总和（此列必须是数值列）
+AVG([DISTINCT|ALL] <列名>)  计算一列值的平均值（此列必须是数值列）
+MAX([DISTINCT|ALL] <列名>)  求一列值中的最大值
+MIN([DISTINCT|ALL] <列名>)  求一列值中的最小值
+如果指定DISTINCT短语，则表示在计算时要取消指定列的重复值；ALL为缺省值。
+在聚集函数遇到空值时，除COUNT（*）外，都跳过空值而只处理非空值。
