@@ -37,17 +37,7 @@ create table student
 删除表
 drop table <表名>;
 
-增加表格数据
-insert into table_name values (---在此输入所有数据---);
-insert into table_name (---在此输入选择的列名---) values (---在此输入对应的数据---);
-
-删除表格数据
-delete from table_name where "primary key_name" = <主键名>;
-
-修改表格数据
-update table_name set <列名>
-
-查询表格数据
+查询表格数据：
 SELECT  列名表  [INTO 新表名] FROM 表或视图名
 [WHERE 查询限定条件]
 [GROUP BY 分组表达式]
@@ -65,3 +55,13 @@ MAX([DISTINCT|ALL] <列名>)  求一列值中的最大值
 MIN([DISTINCT|ALL] <列名>)  求一列值中的最小值
 如果指定DISTINCT短语，则表示在计算时要取消指定列的重复值；ALL为缺省值。
 在聚集函数遇到空值时，除COUNT（*）外，都跳过空值而只处理非空值。
+
+增加表格数据：
+insert into table_name values (---在此输入所有数据---);
+insert into table_name (---在此输入选择的列名---) values (---在此输入对应的数据---);
+
+删除表格数据
+delete from <表名> where "primary key_name" = <主键名>;
+
+修改表格数据
+update table_name set <列名> = <常量> where <限定条件>
